@@ -35,5 +35,21 @@ block content
       div.col-3
         button.btn.btn-success(type='button') GO
 
+  .card(style='width: 25rem;')
+    .card-body
+    h4.card-title AUDIO CONVERTER
+    div.row
+      div.col-6
+        .dropdown
+        button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+          | Select a target format
+        .dropdown-menu(aria-labelledby='dropdownMenuButton')
+          a.dropdown-item(href='#') Convert to DOC
+          a.dropdown-item(href='#') Convert to DOCX
+          a.dropdown-item(href='#') Convert to PDF
+    
+      div.col-3
+        button.btn.btn-success(type='button') GO
+
     
 
