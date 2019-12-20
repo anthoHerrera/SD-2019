@@ -1,14 +1,15 @@
 extends layout
 
 block content
+
   h1= title
   p Welcome to #{title}
-
-  .card(style='width: 25rem;')
+    
+  .card(style='width: 30rem; textalign:center')
     .card-body
     h4.card-title AUDIO CONVERTER
-    div.row
-      div.col-6
+    .row
+      .col-6.col-md-6.col-lg-6
         .dropdown
         button#dropdownMenuButton.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
           | Select a target format
@@ -17,7 +18,7 @@ block content
           a.dropdown-item(href='#') Convert to OGG
           a.dropdown-item(href='#') Convert to MP3
     
-      div.col-3
+      .col-2.col-md-2.col-lg-2
         button.btn.btn-success(type='button') GO
 
   .card(style='width: 25rem;')
