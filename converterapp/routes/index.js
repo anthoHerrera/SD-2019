@@ -6,4 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Converter app' });
 });
 
+router.get('/audio', function(req, res, next) {
+  res.render('audio', { title: 'Converter Audio' });
+});
+
 module.exports = router;

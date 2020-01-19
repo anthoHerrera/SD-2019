@@ -1,0 +1,77 @@
+extends layout
+
+block content
+    h1= title
+    p Seleccione archivo de Audio
+
+    form(action='http://sigv4examplebucket.s3.amazonaws.com/', method='post', enctype='multipart/form-data')
+        | Key to upload: 
+        input(type='input', name='key', value='audiofilessd/${filename}')
+        br
+        input(type='hidden', name='acl', value='public-read')
+        input(type='hidden', name='success_action_redirect', value='')
+        |     Content-Type: 
+        input(type='input', name='Content-Type', value='')
+        br
+        input(type='hidden', name='x-amz-meta-uuid', value='14365123651274')
+        input(type='hidden', name='x-amz-server-side-encryption', value='AES256')
+        input(type='text', name='X-Amz-Credential', value='AKIAIOSFODNN7EXAMPLE/20151229/us-east-1/s3/aws4_request')
+        input(type='text', name='X-Amz-Algorithm', value='AWS4-HMAC-SHA256')
+        input(type='text', name='X-Amz-Date', value='20151229T000000Z')
+        |     Tags for File: 
+        input(type='input', name='x-amz-meta-tag', value='')
+        br
+        input(type='hidden', name='Policy', value='<Base64-encoded policy string>')
+        input(type='hidden', name='X-Amz-Signature', value='<signature-value>')
+        |     File: 
+        input(type='file', name='file')
+        br
+        // The elements after this will be ignored
+        input(type='submit', name='submit', value='Upload file')
+
+        form#upload_form(enctype='multipart/form-data', method='post')
+        input#file1(type='file', name='file1', onchange='uploadFile()')
+        br
+        progress#progressBar(value='0', max='100', style='width:300px;')
+        h3#status
+        p#loaded_n_total
+    label 
+        strong Formato
+
+    .col-4.col-md-4.col-xl-4
+        select#formato.browser-default.custom-select
+            option(selected='') Elija un formato 
+            option(value='1') mp3
+            option(value='2') ogg
+            option(value='3') ac3
+    label 
+        strong Parametros
+
+    .col-4.col-md-4.col-xl-4
+        label Audio Bitrate:
+        select#bitrate.browser-default.custom-select
+            option(selected='') Elija bitrate
+            option(value='48000') 48000 bps
+            option(value='64000') 64000 bps
+            option(value='96000') 96000 bps
+            option(value='128000') 128000 bps
+            option(value='256000') 256000 bps
+            option(value='320000') 320000 bps
+    .col-4.col-md-4.col-xl-4
+        label Audio Sampling Rate:
+        select#opt.browser-default.custom-select
+            option(selected='') Elija sampling rate 
+            option(value='16000') 16000 Hz
+            option(value='32000') 32000 Hz
+            option(value='44100') 44100 Hz
+            option(value='48000') 48000 Hz
+            option(value='96000') 96000 Hz
+    .col-4.col-md-4.col-xl-4
+        label Audio Channels:
+        select#opt.browser-default.custom-select
+            option(selected='') Elija channels 
+            option(value='1') mono
+            option(value='2') stereo
+            
+    
+
