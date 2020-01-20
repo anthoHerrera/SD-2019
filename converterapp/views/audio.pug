@@ -1,40 +1,22 @@
 extends layout
 
 block content
+    script(src="/public/javascripts/uploadAudio")
+    
     h1= title
     p Seleccione archivo de Audio
 
-    form(action='http://sigv4examplebucket.s3.amazonaws.com/', method='post', enctype='multipart/form-data')
-        | Key to upload: 
-        input(type='input', name='key', value='audiofilessd/${filename}')
-        br
-        input(type='hidden', name='acl', value='public-read')
-        input(type='hidden', name='success_action_redirect', value='')
-        |     Content-Type: 
-        input(type='input', name='Content-Type', value='')
-        br
-        input(type='hidden', name='x-amz-meta-uuid', value='14365123651274')
-        input(type='hidden', name='x-amz-server-side-encryption', value='AES256')
-        input(type='text', name='X-Amz-Credential', value='AKIAIOSFODNN7EXAMPLE/20151229/us-east-1/s3/aws4_request')
-        input(type='text', name='X-Amz-Algorithm', value='AWS4-HMAC-SHA256')
-        input(type='text', name='X-Amz-Date', value='20151229T000000Z')
-        |     Tags for File: 
-        input(type='input', name='x-amz-meta-tag', value='')
-        br
-        input(type='hidden', name='Policy', value='<Base64-encoded policy string>')
-        input(type='hidden', name='X-Amz-Signature', value='<signature-value>')
-        |     File: 
-        input(type='file', name='file')
-        br
-        // The elements after this will be ignored
-        input(type='submit', name='submit', value='Upload file')
-
-        form#upload_form(enctype='multipart/form-data', method='post')
-        input#file1(type='file', name='file1', onchange='uploadFile()')
-        br
-        progress#progressBar(value='0', max='100', style='width:300px;')
-        h3#status
-        p#loaded_n_total
+    form#form1(enctype='multipart/form-data', method='post')
+        .row
+            label(for='file') Select a File to Upload
+            br
+            input#file(type='file', name='file', onchange='fileSelected()')
+        #fileName
+        #fileSize
+        #fileType
+        .row
+            input(type='button', onclick='uploadFile()', value='Upload')
+        #progressNumber
     label 
         strong Formato
 
@@ -73,5 +55,5 @@ block content
             option(value='1') mono
             option(value='2') stereo
             
-    
+
 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Audio Converter</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Audio converter</h2>
+        <form id="form1" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <label for="file">Select a File to Upload</label>
+                <br />
+                <input id="file" type="file" name="file" onchange="fileSelected()"/>
+            </div>
+            <div id="fileName"></div>
+            <div id="fileSize"></div>
+            <div id="fileType"></div>
+            <div class="row">
+                <input type="button" onclick="uploadFile()" value="Upload" />
+            </div>
+            <div id="progressNumber"></div>
+            <label> <strong>Formato</strong></label>
+        </form>
+
+        <div class="col-4 col-md-4 col-xl-4">
+            <select class="browser-default custom-select" id="formato">
+                <option selected="">Select a formato </option>
+                <option value="1">mp3</option>
+                <option value="2">ogg</option>
+                <option value="3">ac3</option>
+            </select>
+        </div>
+        <label> <strong>Parametros</strong></label>
+        <div class="col-4 col-md-4 col-xl-4">
+            <label>Audio Bitrate:</label><select class="browser-default custom-select" id="bitrate">
+                <option selected="">choose bitrate</option>
+                <option value="48000">48000 bps</option>
+                <option value="64000">64000 bps</option>
+                <option value="96000">96000 bps</option>
+                <option value="128000">128000 bps</option>
+                <option value="256000">256000 bps</option>
+                <option value="320000">320000 bps</option>
+            </select>
+        </div>
+
+        <div class="col-4 col-md-4 col-xl-4">
+            <label>Audio Sampling Rate:</label>
+            <select class="browser-default custom-select" id="opt">
+                <option selected="">choose sampling rate </option>
+                <option value="16000">16000 Hz</option>
+                <option value="32000">32000 Hz</option>
+                <option value="44100">44100 Hz</option>
+                <option value="48000">48000 Hz</option>
+                <option value="96000">96000 Hz</option>
+            </select>
+        </div>
+
+        <div class="col-4 col-md-4 col-xl-4">
+            <label>Audio Channels:</label>
+            <select class="browser-default custom-select" id="opt">
+                <option selected="">choose channels </option>
+                <option value="1">mono</option>
+                <option value="2">stereo</option>
+            </select>
+        </div>
+    </div>
+    <script src="js/uploadAudio.js"></script>
+
+</body>
+
+</html>
