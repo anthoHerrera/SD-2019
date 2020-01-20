@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    script(src="/public/javascripts/uploadImage")
+    
+    h1= title
+    p Image converter
+
+    form#form1(enctype='multipart/form-data', method='post')
+        .row
+            label(for='file') Select a File to Upload
+            br
+            input#file(type='file', name='file', onchange='fileSelected()')
+        #fileName
+        #fileSize
+        #fileType
+        .row
+            input(type='button', onclick='uploadFile()', value='Upload')
+        #progressNumber
+    label 
+        strong Formato
+
+    .col-4.col-md-4.col-xl-4
+        select#formato.browser-default.custom-select
+            option(selected='') Elija un formato 
+            option(value='1') jpg a png
+            option(value='2') png a jpg

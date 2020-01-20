@@ -10,4 +10,8 @@ router.get('/audio', function(req, res, next) {
   res.render('audio', { title: 'Converter Audio' });
 });
 
+router.get('/image', function(req, res, next) {
+  res.render('image', { title: 'Image Converter' });
+});
+
 module.exports = router;

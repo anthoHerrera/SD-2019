@@ -18,6 +18,10 @@ app.get('/audio', (req, res) => {
     res.render('audio.ejs');
 });
 
+app.get('/image', (req, res) => {
+    res.render('image.ejs');
+});
+
 app.use(express.static('public'))
 
 app.listen(app.get('port'), () => {
