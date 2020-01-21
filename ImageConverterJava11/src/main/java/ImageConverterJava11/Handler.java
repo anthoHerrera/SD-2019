@@ -24,13 +24,15 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-public class Handler implements RequestHandler<S3Event, String> {
+public class Handler implements
+        RequestHandler<S3Event, String> {
     private static final float MAX_WIDTH = 100;
-	private static final float MAX_HEIGHT = 100;
+    private static final float MAX_HEIGHT = 100;
     private final String JPG_TYPE = (String) "jpg";
     private final String JPG_MIME = (String) "image/jpeg";
     private final String PNG_TYPE = (String) "png";
     private final String PNG_MIME = (String) "image/png";
+    private final String DST_BUCKET = (String) "convertedimages";
 
     public String handleRequest(S3Event s3event, Context context) {
         try {
@@ -40,17 +42,16 @@ public class Handler implements RequestHandler<S3Event, String> {
 
             // Object key may have spaces or unicode non-ASCII characters.
             String srcKey = record.getS3().getObject().getUrlDecodedKey();
+            String[] srcSplit = srcKey.split("/");
 
-            String dstBucket = srcBucket + "png";
-            String dstKey = "png-" + srcKey;
+            String fileName = srcSplit[1];
 
-            // Sanity check: validate that source and destination are different
-            // buckets.
-            if (srcBucket.equals(dstBucket)) {
-                System.out
-                        .println("Destination bucket must not match source bucket.");
-                return "";
-            }
+            String dstBucket = DST_BUCKET;
+            String dstKey = "";
+            String metadata = "";
+            String tipeToWrite = "";
+            
+            System.out.println("split len"+srcKey.split("/")[0]);
 
             // Infer the image type.
             Matcher matcher = Pattern.compile(".*\\.([^\\.]*)").matcher(srcKey);
@@ -60,11 +61,21 @@ public class Handler implements RequestHandler<S3Event, String> {
                 return "";
             }
             String imageType = matcher.group(1);
+            if(JPG_TYPE.equals(imageType)) {
+            	dstKey = "png/" + fileName.substring(0, fileName.length()-3) + "png";
+            	metadata = JPG_MIME;
+            	tipeToWrite = JPG_TYPE;
+            }
+            else if(PNG_TYPE.equals(imageType)) {
+            	dstKey = "jpg/" + fileName.substring(0, fileName.length()-3) + "jpg";
+            	metadata = PNG_MIME;
+            	tipeToWrite = PNG_TYPE;
+            }
             if (!(JPG_TYPE.equals(imageType)) && !(PNG_TYPE.equals(imageType))) {
                 System.out.println("Skipping non-image " + srcKey);
                 return "";
             }
-
+            System.out.println("image type: "+ imageType);
             // Download the image from S3 into a stream
             AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
             S3Object s3Object = s3Client.getObject(new GetObjectRequest(
@@ -97,13 +108,14 @@ public class Handler implements RequestHandler<S3Event, String> {
 
             // Re-encode image to target format
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(srcImage, PNG_TYPE, os);
+            
+            ImageIO.write(srcImage, tipeToWrite, os);
             InputStream is = new ByteArrayInputStream(os.toByteArray());
             // Set Content-Length and Content-Type
             
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(os.size());
-            meta.setContentType(PNG_MIME);
+            meta.setContentType(metadata);
             /*
             ObjectMetadata meta = new ObjectMetadata();
             meta.setContentLength(os.size());
