@@ -8,17 +8,15 @@
     <title>Audio Converter</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-    
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.207.0.min.js"></script>
+
 </head>
 
 <body>
@@ -29,24 +27,21 @@
             <div class="row">
                 <label for="file">Select a File to Upload</label>
                 <br />
-                <input id="file" type="file" name="file" onchange="fileSelected()"/>
+                <input id="file" type="file" name="file" onchange="" />
             </div>
-            <div id="fileName"></div>
-            <div id="fileSize"></div>
-            <div id="fileType"></div>
             <div class="row">
                 <input type="button" onclick="uploadFile()" value="Upload" />
             </div>
-            <div id="progressNumber"></div>
-            <label> <strong>Formato</strong></label>
+            <progress max="100" value="0"></progress>
         </form>
 
+        <label> <strong>Formato</strong></label>
         <div class="col-4 col-md-4 col-xl-4">
             <select class="browser-default custom-select" id="formato">
                 <option selected="">Select a formato </option>
-                <option value="1">mp3</option>
-                <option value="2">ogg</option>
-                <option value="3">ac3</option>
+                <option value="mp3">mp3</option>
+                <option value="ogg">ogg</option>
+                <option value="ac3">ac3</option>
             </select>
         </div>
         <label> <strong>Parametros</strong></label>
@@ -64,26 +59,110 @@
 
         <div class="col-4 col-md-4 col-xl-4">
             <label>Audio Sampling Rate:</label>
-            <select class="browser-default custom-select" id="opt">
+            <select class="browser-default custom-select" id="sampling">
                 <option selected="">choose sampling rate </option>
                 <option value="16000">16000 Hz</option>
                 <option value="32000">32000 Hz</option>
                 <option value="44100">44100 Hz</option>
                 <option value="48000">48000 Hz</option>
-                <option value="96000">96000 Hz</option>
             </select>
         </div>
 
         <div class="col-4 col-md-4 col-xl-4">
             <label>Audio Channels:</label>
-            <select class="browser-default custom-select" id="opt">
+            <select class="browser-default custom-select" id="channel">
                 <option selected="">choose channels </option>
                 <option value="1">mono</option>
                 <option value="2">stereo</option>
             </select>
         </div>
+        <div class="row"><p></p></div>
+
+        <div class="row">
+            <input type="button" onclick="conversion()" value="Convertir" />
+        </div>
     </div>
-    <script src="js/uploadAudio.js"></script>
+
+    <script type="text/javascript">
+
+        function uploadFile() {
+            AWS.config.update({
+                accessKeyId: '',
+                secretAccessKey: '',
+                region: ''
+            });
+
+            var bucketName = '';
+            var fileToBeUpload = document.getElementById('file').files[0];
+            var filePath = fileToBeUpload.name; // File will be saved to this folder on aws s3.
+
+            // Initialize the AWS Object
+            var bucket = new AWS.S3({
+                apiVersion: '2006-03-01',
+                params: { Bucket: bucketName }
+            });
+
+            var params = {
+                Key: filePath,
+                ContentType: fileToBeUpload.type,
+                Body: fileToBeUpload,
+                ContentDisposition: 'attachment' // if you want to enable file download via public url.
+            };
+
+            /* turn off the timeout (Optional) */
+            AWS.config.httpOptions.timeout = 0;
+
+            // upload file
+            bucket.upload(params).on('httpUploadProgress', function (evt) {
+                var uploaded = Math.round(evt.loaded / evt.total * 100);
+                console.log('File uploaded:' + uploaded);
+                $("progress").attr('value', uploaded);
+            }).send(function (err, data) {
+                if (err) {
+                    // an error occurred, handle the error
+                    console.log(err, err.stack);
+                    return;
+                }
+
+                var fileUrl = data.Location;
+                console.log('File URL:', fileUrl);
+                alert('File is uploaded successfully!');
+            })
+        }
+
+    </script>
+
+    <script type="text/javascript">
+        function conversion() {
+            var keyname = document.getElementById('file').files[0].name;
+            var formato = $('#formato').children("option:selected").val();
+            var bitrate = $('#bitrate').children("option:selected").val();
+            var sampling = $('#sampling').children("option:selected").val();
+            var channel = $('#channel').children("option:selected").val();
+            var fileobjkeyname = keyname.substring(0, keyname.length - 4) + "-convertido." + formato;
+
+            var converter = {
+                "keyName": keyname,
+                "formato": formato,
+                "bitRate": parseInt(bitrate),
+                "channel": parseInt(channel),
+                "samplingRate": parseInt(sampling),
+                "fileObjKeyName": fileobjkeyname
+            }
+            var datajson = JSON.stringify(converter);
+            console.log(datajson);
+
+            $.ajax({
+                url: "",//api url
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                },
+                data: datajson,
+                contentType: 'application/json', 
+            });
+        }
+    </script>
 
 </body>
 
