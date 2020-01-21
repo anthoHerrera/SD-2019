@@ -87,12 +87,12 @@
 
         function uploadFile() {
             AWS.config.update({
-                accessKeyId: '',
-                secretAccessKey: '',
-                region: ''
+                accessKeyId: 'AKIAI4NAFJBZTKZX25TQ',
+                secretAccessKey: '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',
+                region: 'sa-east-1'
             });
 
-            var bucketName = '';
+            var bucketName = 'audiofilessd';
             var fileToBeUpload = document.getElementById('file').files[0];
             var filePath = fileToBeUpload.name; // File will be saved to this folder on aws s3.
 
