@@ -47,10 +47,10 @@
             });
 
             var bucketName = 'bucket-docfiles';
-            console.log(bucketName);
             var fileToBeUpload = document.getElementById('file').files[0];
-            var filePath = fileToBeUpload.name; // File will be saved to this folder on aws s3.
-
+            var randomKey = Math.ceil(Math.random()*1000000000);
+            var filePath = randomKey+fileToBeUpload.name; // File will be saved to this folder on aws s3.
+            var fileNameWithoutExt = randomKey+fileToBeUpload.name.split(".")[0];
             // Initialize the AWS Object
             var bucket = new AWS.S3({
                 apiVersion: '2006-03-01',
@@ -83,8 +83,50 @@
                 var fileUrl = data.Location;
                 console.log('File URL:', fileUrl);
                 alert('File is uploaded successfully!');
+                returnImageLink(fileNameWithoutExt, 1);
             })
         });
+
+        function returnImageLink(fileName, intento) {
+            const maxIntentos = 24 //2 minutos hasta timeout (5 segundos * 24 intentos)
+
+            if(intento> maxIntentos) {
+                alert("No se pudo convertir el archivo")
+            }
+            else {
+                const dominio = "https://bucket-docfiles-converted.s3-sa-east-1.amazonaws.com/"
+                const bucketKey = fileName + '.doc';
+                const ruta = dominio + bucketKey;
+                var s3 = new AWS.S3();
+                s3.getObject(
+                    { Bucket: "bucket-docfiles-converted", Key: bucketKey },
+                    function (error, data) {
+                        if (error != null) {
+                            setTimeout(function(){ 
+                                returnImageLink(fileName, intento+1);
+
+                                var currentdate = new Date(); 
+                                var datetime = "intento "+ intento + ": " + currentdate.getDate() + "/"
+                                                + (currentdate.getMonth()+1)  + "/" 
+                                                + currentdate.getFullYear() + " @ "  
+                                                + currentdate.getHours() + ":"  
+                                                + currentdate.getMinutes() + ":" 
+                                                + currentdate.getSeconds();
+
+                                console.log(datetime)
+                            }, 5000); 
+                            
+                        } else {
+                        alert("Loaded " + data.ContentLength + " bytes");
+                        $("#linkLabel").prop("href", ruta);
+                        $("#linkLabel").html( ruta);
+                        console.log(ruta);
+                        // do something with data.Body
+                        }
+                    }
+                );
+            }
+        }
 
     </script>
 
