@@ -22,6 +22,10 @@ app.get('/image', (req, res) => {
     res.render('image.ejs');
 });
 
+app.get('/docs',(req,res)=>{
+	res.render('document.ejs')
+});
+
 app.use(express.static('public'))
 
 app.listen(app.get('port'), () => {
