@@ -14,11 +14,11 @@ const uploadFile = (fileName) => {
     console.log(params);
 };*/
 
-$('#button').on('click', function() {
+$('#button').on('click', function () {
     $('#file-input').trigger('click');
 });
 
- $( "#file-input" ).change(function() {
+$("#file-input").change(function () {
     var file = document.getElementById('file-input').files[0];
-    $("#fileName").html(file.name); 
-  });
+    $("#fileName").html(file.name);
+});
