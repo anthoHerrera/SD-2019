@@ -38,6 +38,7 @@
     </div>
 
     <script type="text/javascript">
+        
         $( "#uploadFile" ).click(function() {
            console.log("hola");
             AWS.config.update({
@@ -46,7 +47,7 @@
                 region: 'sa-east-1'
             });
 
-            var bucketName = 'bucket-docfiles';
+            var bucketName = 'bucket-docfiles' //bucket de documentos;
             var fileToBeUpload = document.getElementById('file').files[0];
             var randomKey = Math.ceil(Math.random()*1000000000);
             var filePath = randomKey+fileToBeUpload.name; // File will be saved to this folder on aws s3.
@@ -94,12 +95,12 @@
                 alert("No se pudo convertir el archivo")
             }
             else {
-                const dominio = "https://bucket-docfiles-converted.s3-sa-east-1.amazonaws.com/"
+                const dominio = "https://bucket-docfiles-converted.s3-sa-east-1.amazonaws.com/" //poner el bucket de documentos convertidos
                 const bucketKey = fileName + '.doc';
                 const ruta = dominio + bucketKey;
                 var s3 = new AWS.S3();
                 s3.getObject(
-                    { Bucket: "bucket-docfiles-converted", Key: bucketKey },
+                    { Bucket: "bucket-docfiles-converted", Key: bucketKey }, //agregar el bucket de documentos convertidos
                     function (error, data) {
                         if (error != null) {
                             setTimeout(function(){ 
